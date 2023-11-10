@@ -8,8 +8,16 @@
   <body>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-      console.log(io);
-      console.log("yoo");
+      const socket = io("http://localhost:8000");
+      socket.on("connect", () => {
+        console.log(socket);
+      });
+      socket.on("name", (data) => {
+        console.log(data);
+      });
+      socket.io.on("reconnect", (data) => {
+        console.log({ data });
+      });
     </script>
     Hello
   </body>
