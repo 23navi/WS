@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 // const Server = require('socket.io') = Server in the docs
 const socketio = require("socket.io");
+const namespaces = require("./data/namespaces");
 
 app.use(express.static(__dirname + "/public"));
 
@@ -12,9 +13,10 @@ const io = socketio(expressServer); // ws/tcp traffic
 // io = server in the docs
 io.on("connection", (socket) => {
   console.log(socket.id + "has connected");
-  socket.emit("cc", "yooooo", "yoooo2", "yoooo3");
   socket.on("newMessageToServer", (dataFromClient) => {
     console.log("Data:", dataFromClient);
     io.emit("newMessageToClients", { text: dataFromClient.text });
   });
+
+  socket.emit("nsList", namespaces);
 });
