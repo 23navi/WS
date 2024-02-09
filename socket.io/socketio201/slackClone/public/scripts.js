@@ -9,5 +9,4 @@ socket.on("nsList", (namespaces) => {
   namespaces.forEach((ns) => {
     nameSpaceDiv.innerHTML += `<div class="namespace" ns="${ns.name}"><img src="${ns.image}"></div>`;
   });
-  console.log({ namespaces });
 });
