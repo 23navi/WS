@@ -5,12 +5,14 @@ const socketio = require("socket.io");
 
 app.use(express.static(__dirname + "/public"));
 
-const expressServer = app.listen(8001);
+const expressServer = app.listen(8001); // http traffic
 // io = the server object in the docs!
-const io = socketio(expressServer);
+const io = socketio(expressServer); // ws/tcp traffic
 
 // io = server in the docs
 io.on("connection", (socket) => {
+  console.log(socket.id + "has connected");
+  socket.emit("cc", "yooooo", "yoooo2", "yoooo3");
   socket.on("newMessageToServer", (dataFromClient) => {
     console.log("Data:", dataFromClient);
     io.emit("newMessageToClients", { text: dataFromClient.text });
