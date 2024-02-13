@@ -1,6 +1,11 @@
 const socket = io("http://localhost:8001"); // io is available in global scope as we added that to layout.html script
 
+const socketWiki = io("http://localhost:8001/wiki");
+const socketMozilla = io("http://localhost:8001/mozilla");
+const socketLinux = io("http://localhost:8001/linux");
+
 socket.on("connect", () => {
+  socket.emit("clientConnectDefaultNS");
   console.log("Connected from script.js");
 });
 

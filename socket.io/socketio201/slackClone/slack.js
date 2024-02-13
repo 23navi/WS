@@ -13,10 +13,16 @@ const io = socketio(expressServer); // ws/tcp traffic
 // io = server in the docs
 io.on("connection", (socket) => {
   console.log(socket.id + "has connected");
-  socket.on("newMessageToServer", (dataFromClient) => {
-    console.log("Data:", dataFromClient);
-    io.emit("newMessageToClients", { text: dataFromClient.text });
+  socket.on("clientConnectDefaultNS", () => {
+    //When client connects to default NS, it should get the list of all NameServers
+    socket.emit("nsList", namespaces);
   });
+});
 
-  socket.emit("nsList", namespaces);
+// connect to all the namespaces
+
+namespaces.forEach((ns) => {
+  io.of(ns.endpoint).on("connect", (socket) => {
+    console.log("Socket connnect to " + ns.name);
+  });
 });
