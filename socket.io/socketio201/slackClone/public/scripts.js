@@ -1,8 +1,17 @@
-const socket = io("http://localhost:8001"); // io is available in global scope as we added that to layout.html script
+const socket = io("http://localhost:8002"); // io is available in global scope as we added that to layout.html script
 
-const socketWiki = io("http://localhost:8001/wiki");
-const socketMozilla = io("http://localhost:8001/mozilla");
-const socketLinux = io("http://localhost:8001/linux");
+// const socketWiki = io("http://localhost:8002/wiki");
+// const socketMozilla = io("http://localhost:8002/mozilla");
+// const socketLinux = io("http://localhost:8002/linux");
+
+const nameSpaceSockets = {};
+
+const addListener = (nsId, eventName) => {
+  nameSpaceSockets[ns.id]["socket"].on(eventName, (val) => {
+    // Do somechange
+  });
+  nameSpaceSockets[ns.id][eventName] = true;
+};
 
 socket.on("connect", () => {
   socket.emit("clientConnectDefaultNS");
@@ -14,6 +23,19 @@ socket.on("nsList", (namespaces) => {
   nameSpaceDiv.innerHTML = "";
   namespaces.forEach((ns) => {
     nameSpaceDiv.innerHTML += `<div class="namespace" ns="${ns.endpoint}"><img src="${ns.image}"></div>`;
+
+    console.log(ns.id);
+    // If only there is no connection for that NS is not available, we will add
+    if (!nameSpaceSockets[ns.id]) {
+      nameSpaceSockets[ns.id] = {};
+      nameSpaceSockets[ns.id]["socket"] = io(
+        `http://localhost:8002${ns.endpoint}`
+      );
+      nameSpaceSockets[ns.id]["socket"].on("ns-change", (val) => {
+        // Do somechange
+      });
+      nameSpaceSockets[ns.id]["ns-change"] = true;
+    }
   });
 
   Array.from(document.getElementsByClassName("namespace")).forEach(
