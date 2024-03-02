@@ -30,6 +30,9 @@ io.on("connection", (socket) => {
 
 namespaces.forEach((ns) => {
   io.of(ns.endpoint).on("connect", (socket) => {
-    console.log(socket.id + " connnect to " + ns.name);
+    // console.log(socket.id + " connnect to " + ns.name);
+    socket.on("joinRoom", ({ roomName, nsId }) => {
+      console.log({ roomName, nsId });
+    });
   });
 });

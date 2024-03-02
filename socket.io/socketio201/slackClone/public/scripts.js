@@ -24,27 +24,27 @@ socket.on("nsList", (namespaces) => {
   namespaces.forEach((ns) => {
     nameSpaceDiv.innerHTML += `<div class="namespace" ns="${ns.endpoint}"><img src="${ns.image}"></div>`;
 
-    console.log(ns.id);
     // If only there is no connection for that NS is not available, we will add
     if (!nameSpaceSockets[ns.id]) {
       nameSpaceSockets[ns.id] = {};
       nameSpaceSockets[ns.id]["socket"] = io(
         `http://localhost:8002${ns.endpoint}`
       );
-      nameSpaceSockets[ns.id]["socket"].on("ns-change", (val) => {
-        // Do somechange
-      });
-      nameSpaceSockets[ns.id]["ns-change"] = true;
+      if (nameSpaceSockets[ns.id]["ns-change"]) {
+        nameSpaceSockets[ns.id]["socket"].on("ns-change", (val) => {
+          // Do somechange
+        });
+        nameSpaceSockets[ns.id]["ns-change"] = true;
+      }
+      Array.from(document.getElementsByClassName("namespace")).forEach(
+        (element) => {
+          element.addEventListener("click", (e) => {
+            joinNs(namespaces, element);
+          });
+        }
+      );
     }
   });
-
-  Array.from(document.getElementsByClassName("namespace")).forEach(
-    (element) => {
-      element.addEventListener("click", (e) => {
-        joinNs(namespaces, element);
-      });
-    }
-  );
 
   const lastUsedNSendpoint = localStorage.getItem("lastNs");
   console.log({ lastUsedNSendpoint });

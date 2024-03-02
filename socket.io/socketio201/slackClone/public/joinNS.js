@@ -3,7 +3,6 @@ const joinNs = (namespaces, element) => {
   const clickedNs = namespaces.find(
     (row) => row.endpoint === nsClickedEndpoint
   );
-  console.log({ clickedNs });
   const roomDiv = document.querySelector(".main-rooms .room-list");
   roomDiv.innerHTML = "";
   clickedNs.rooms.forEach((room) => {
@@ -15,7 +14,6 @@ const joinNs = (namespaces, element) => {
     room.addEventListener("click", (e) => {
       e.preventDefault();
       // I have to call joinRoom and create an listeiner
-      console.log(`${e.target.innerText} was clicked`);
       const namespaceId = e.target.getAttribute("namespaceId");
       joinRoom(e.target.innerText, namespaceId);
     });
