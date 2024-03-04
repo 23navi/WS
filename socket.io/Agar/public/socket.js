@@ -2,14 +2,10 @@
 const socket = io.connect("http://localhost:8002");
 
 const init = async () => {
-  console.log("This init is working");
   //init is called inside of start-game click listener
-  //   const initData = await socket.emitWithAck("init", {
-  //     playerName: player.name,
-  //   });
-  const initData = {
-    orbs: [],
-  };
+  const initData = await socket.emitWithAck("init", {
+    playerName: player.name,
+  });
 
   //our await has resolved, so start 'tocking'
   setInterval(async () => {
