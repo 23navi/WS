@@ -1,29 +1,36 @@
-let wHeight = $(window).height();
-let wWidth = $(window).width();
-let player = {}; //This is all things "this" player
+let wHeight = window.innerHeight;
+let wWidth = window.innerWidth;
 
-let canvas = document.querySelector("#the-canvas");
-let context = canvas.getContext("2d");
-canvas.width = wWidth;
-canvas.height = wHeight;
+const canva = document.querySelector("#the-canvas");
 
-console.log("ui.js is running");
+const context = canva.getContext("2d");
 
-$(window).load(() => {
-  $("#loginModal").modal("show");
+canva.height = wHeight;
+canva.width = wWidth;
+const player = {}; // all the data for the particular player
+
+const loginModal = new bootstrap.Modal(document.querySelector("#loginModal"));
+const spawnModal = new bootstrap.Modal(document.querySelector("#spawnModal"));
+
+window.addEventListener("load", () => {
+  loginModal.show();
 });
 
-$(".name-form").submit((event) => {
-  event.preventDefault();
-  // console.log("Submitted!")
+document.querySelector(".name-form").addEventListener("submit", (e) => {
+  e.preventDefault();
   player.name = document.querySelector("#name-input").value;
-  $("#loginModal").modal("hide");
-  $("#spawnModal").modal("show");
-  document.querySelector(".player-name").innerHTML = player.name;
+  loginModal.hide();
+  spawnModal.show();
+  console.log({ player });
 });
 
-$(".start-game").click((event) => {
-  $(".modal").modal("hide");
-  $(".hiddenOnStart").removeAttr("hidden");
+document.querySelector(".start-game").addEventListener("click", (e) => {
+  // hide the spawn modal
+  spawnModal.hide();
+
+  // show the hiddenOnStart elements
+  Array.from(document.querySelectorAll(".hiddenOnStart")).forEach((el) =>
+    el.removeAttribute("hidden")
+  );
   init();
 });
