@@ -24,7 +24,7 @@ if (cluster.isMaster) {
     serialization: "advanced",
   });
 
-  httpServer.listen(3000);
+  httpServer.listen(8002);
 
   for (let i = 0; i < numCPUs; i++) {
     cluster.fork();
@@ -47,6 +47,6 @@ if (cluster.isMaster) {
   setupWorker(io);
 
   io.on("connection", (socket) => {
-    /* ... */
+    console.log("Socket connected to to " + process.pid);
   });
 }
