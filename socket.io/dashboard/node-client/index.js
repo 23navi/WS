@@ -1,4 +1,22 @@
 const os = require("os");
+const io = require("socket.io-client");
+const socket = io("http://localhost:8002");
+
+socket.on("connect", () => {
+  console.log("Client node connected to server");
+
+  //what about macA?
+  const nI = os.networkInterfaces(); //a list of all network interfaces on this machine
+  let macA; //mac address
+  //loop through all nI until () we find a non-internal one.
+  for (let key in nI) {
+    const isInternetFacing = !nI[key][0].internal;
+    if (isInternetFacing) {
+      macA = nI[key][0].mac + Math.floor(Math.random() * 100000);
+      break;
+    }
+  }
+});
 
 const cpuAverage = () => {
   const cpus = os.cpus();
@@ -37,45 +55,6 @@ const getCpuLoad = () =>
       resolve(percentOfCpu);
     }, 100);
   });
-
-// const performanceLoadData = () =>
-//   new Promise(async (resolve, reject) => {
-//     const cpus = os.cpus(); //all cpus as an array
-
-//     const totalMem = os.totalmem(); //in bytes
-//     // - free
-//     const freeMem = os.freemem(); //in bytes
-//     // - memory useage
-//     const usedMem = totalMem - freeMem;
-//     const memUseage = Math.floor((usedMem / totalMem) * 100) / 100; //2 decimal places
-//     // - OS type
-//     const osType = os.type() === "Darwin" ? "Mac" : os.type();
-//     // console.log(osType)
-//     // - uptime
-//     const upTime = os.uptime();
-
-//     // - CPU info
-//     // -Cpu Type
-//     const cpuType = cpus[0].model;
-//     // - Number of cores
-//     const numCores = cpus.length;
-//     // - Clock Speed
-//     const cpuSpeed = cpus[0].speed;
-
-//     const cpuLoad = await getCpuLoad();
-//     resolve({
-//       freeMem,
-//       totalMem,
-//       usedMem,
-//       memUseage,
-//       osType,
-//       upTime,
-//       cpuType,
-//       numCores,
-//       cpuSpeed,
-//       cpuLoad,
-//     });
-//   });
 
 const performanceLoadData = async () => {
   const cpus = os.cpus();

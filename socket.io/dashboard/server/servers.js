@@ -5,6 +5,8 @@ const numCPUs = require("os").cpus().length;
 const { setupMaster, setupWorker } = require("@socket.io/sticky");
 const { createAdapter, setupPrimary } = require("@socket.io/cluster-adapter");
 
+const socketMain = require("./socketMain");
+
 if (cluster.isMaster) {
   console.log(`Master ${process.pid} is running`);
 
@@ -40,7 +42,7 @@ if (cluster.isMaster) {
   const httpServer = http.createServer();
   const io = new Server(httpServer, {
     cors: {
-      origin: "http://localhost:3000",
+      origin: ["http://localhost:3000", "http://localhost:3001"],
       credentials: true,
     },
   });
@@ -51,7 +53,5 @@ if (cluster.isMaster) {
   // setup connection with the primary process
   setupWorker(io);
 
-  io.on("connection", (socket) => {
-    console.log("Socket connected to to " + process.pid);
-  });
+  socketMain(io);
 }
