@@ -1,10 +1,11 @@
 const os = require("os");
 const io = require("socket.io-client");
-const socket = io("http://localhost:8002");
+const socket = io("http://localhost:8002", {
+  auth: { token: "client-server" },
+});
 
 socket.on("connect", () => {
   console.log("Client node connected to server");
-
   //what about macA?
   const nI = os.networkInterfaces(); //a list of all network interfaces on this machine
   let macA; //mac address
