@@ -17,6 +17,18 @@ socket.on("connect", () => {
       break;
     }
   }
+  const perfDataInterval = setInterval(async () => {
+    const perfData = await performanceLoadData();
+    perfData.macA = macA;
+    socket.emit("perfData", perfData);
+    console.log("---------------");
+    console.log({ perfData });
+    console.log("---------------");
+  }, 1000);
+
+  socket.on("disconnect", () => {
+    clearInterval(perfDataInterval);
+  });
 });
 
 const cpuAverage = () => {
