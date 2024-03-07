@@ -21,11 +21,11 @@ function App() {
     };
   }, []);
 
-  return (
-    <div className="App">
-      <Widget />
-    </div>
-  );
+  const widgets = Object.keys(perfDataObj).map((key) => {
+    return <Widget key={key} data={perfDataObj[key]} />;
+  });
+
+  return <div className="App">{widgets}</div>;
 }
 
 export default App;
