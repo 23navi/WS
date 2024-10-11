@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
@@ -7,7 +7,7 @@ import { AuthService } from 'src/app/auth/services/auth.service';
   selector: 'home',
   templateUrl: './home.component.html',
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   isLoggedInSubscription: Subscription | undefined;
   constructor(private authService: AuthService, private router: Router) {}
 

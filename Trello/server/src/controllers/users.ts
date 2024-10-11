@@ -22,10 +22,6 @@ export const register = async (
   next: NextFunction
 ) => {
   try {
-    const existingUser = await UserModel.findOne({ email: req.body.email });
-    if (existingUser) {
-      return res.status(422).send("Email already exists");
-    }
     const newUser = new UserModel({
       email: req.body.email,
       username: req.body.username,

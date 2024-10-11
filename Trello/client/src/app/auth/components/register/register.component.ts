@@ -33,7 +33,7 @@ export class RegisterComponent {
       },
       error: (err: HttpErrorResponse) => {
         console.log('err', err.error);
-        this.errorMessage = err.error;
+        this.errorMessage = err.error.join(', ');
       },
     });
   }
