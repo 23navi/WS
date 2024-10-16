@@ -7,10 +7,15 @@ import * as boardsController from "./controllers/boards";
 import bodyParser from "body-parser";
 import authMiddleware from "./middlewares/auth";
 import cors from "cors";
+import { SocketEventsEnum } from "./types/socketEvents.enum";
 
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer);
+const io = new Server(httpServer, {
+  cors: {
+    origin: "*",
+  },
+});
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -34,8 +39,13 @@ app.get("/api/boards", authMiddleware, boardsController.getBoards);
 app.get("/api/boards/:boardId", authMiddleware, boardsController.getBoard);
 app.post("/api/boards", authMiddleware, boardsController.createBoard);
 
-io.on("connection", () => {
-  console.log("connect");
+io.on("connection", (socket) => {
+  socket.on(SocketEventsEnum.boardsJoin, (data) => {
+    boardsController.joinBoard(io, socket, data);
+  });
+  socket.on(SocketEventsEnum.boardsLeave, (data) => {
+    boardsController.leaveBoard(io, socket, data);
+  });
 });
 
 mongoose.connect("mongodb://localhost:27017/eltrello").then(() => {
