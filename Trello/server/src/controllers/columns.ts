@@ -1,55 +1,52 @@
+import { NextFunction, Response } from "express";
+import { ExpressRequestInterface } from "../types/expressRequest.interface";
+import ColumnModel from "../models/column";
 import { Server } from "socket.io";
 import { Socket } from "../types/socket.interface";
-import ColumnModel from "../models/column";
 import { SocketEventsEnum } from "../types/socketEvents.enum";
+import { getErrorMessage } from "../helpers";
 
 export const getColumns = async (
-  io: Server,
-  socket: Socket,
-  data: { boardId: string }
+  req: ExpressRequestInterface,
+  res: Response,
+  next: NextFunction
 ) => {
   try {
-    if (!socket.user) {
-      throw new Error("Unauthorized");
+    if (!req.user) {
+      return res.sendStatus(401);
     }
-    const columns = await ColumnModel.find({ boardId: data.boardId });
-    socket.emit(SocketEventsEnum.columnsGet, columns);
+    const columns = await ColumnModel.find({ boardId: req.params.boardId });
+    res.send(columns);
   } catch (err) {
-    console.log(err);
-  }
-};
-
-export const getColumn = async (
-  io: Server,
-  socket: Socket,
-  data: { columnId: string }
-) => {
-  try {
-    if (!socket.user) {
-      throw new Error("Unauthorized");
-    }
-    const column = await ColumnModel.findById(data.columnId);
-  } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 
 export const createColumn = async (
   io: Server,
   socket: Socket,
-  data: { boardId: string; name: string }
+  data: { boardId: string; title: string }
 ) => {
   try {
     if (!socket.user) {
-      throw new Error("Unauthorized");
+      socket.emit(
+        SocketEventsEnum.columnsCreateFailure,
+        "User is not authorized"
+      );
+      return;
     }
     const newColumn = new ColumnModel({
-      name: data.name,
-      userId: socket.user.id,
+      title: data.title,
       boardId: data.boardId,
+      userId: socket.user.id,
     });
     const savedColumn = await newColumn.save();
+    io.to(data.boardId).emit(
+      SocketEventsEnum.columnsCreateSuccess,
+      savedColumn
+    );
+    console.log("savedColumn", savedColumn);
   } catch (err) {
-    console.log(err);
+    socket.emit(SocketEventsEnum.columnsCreateFailure, getErrorMessage(err));
   }
 };

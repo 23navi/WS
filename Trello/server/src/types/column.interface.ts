@@ -1,7 +1,7 @@
 import { Schema, Document } from "mongoose";
 
 export interface Column {
-  name: string;
+  title: string;
   createdAt: Date;
   updatedAt: Date;
   userId: Schema.Types.ObjectId;
